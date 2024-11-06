@@ -27,8 +27,6 @@ fastify.get('/', async (req, res) => {
 
 fastify.register(async function (fastify) {
     fastify.register(userRoute, { prefix: "/users" })
-    fastify.register(userRoute, { prefix: "/product" })
-    fastify.register(userRoute, { prefix: "/basket" })
 }, { prefix: "/api/v1" })
 
 // Hooks

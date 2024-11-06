@@ -12,26 +12,24 @@ fastify.register(require('@fastify/sensible'))
 fastify.register(validatorPlugin)
 fastify.register(responseTimePlugin)
 
-// test route
-
-const testSchema = Joi.object({
-    username: Joi.string().required().min(5)
-})
-
-fastify.post('/test', async (req, res) => {
-    fastify.validate(testSchema, req.body)
-
-    return req.body
-})
-
-
-// end
-
 // Controller
 const userController = require('./src/controllers/userController')
 
 // Routes
 const userRoute = require('./src/routes/userRoute')
+// shop.ir
+// shop.ir/api/v1
+
+// my routes
+fastify.get('/', async (req, res) => {
+    return { message: "Welcome to My SHOP!" }
+})
+
+fastify.register(async function (fastify) {
+    fastify.register(userRoute, { prefix: "/users" })
+    fastify.register(userRoute, { prefix: "/product" })
+    fastify.register(userRoute, { prefix: "/basket" })
+}, { prefix: "/api/v1" })
 
 // Hooks
 fastify.addHook("onRequest", async (req, res) => {
@@ -47,28 +45,9 @@ fastify.addHook("preValidation", async (req, res) => {
     }
 })
 
-// fastify.addHook("onSend", async (req, res, payload) => {
-//     const data = JSON.parse(payload)
-//     const statusCode = res.statusCode
-
-//     let message = "Operation successfully!"
-//     if(statusCode > 400) message = "Operation failed!"
-
-//     const response = {statusCode, message, data}
-
-//     return JSON.stringify(response)
-// })
-
 fastify.addHook("onResponse", async (req, res) => {
     console.log(`Response sent for ${req.raw.url} with method: ${req.raw.method} with status: ${res.statusCode}`)
 })
-
-// my routes
-fastify.get('/', async (req, res) => {
-    return { message: "Welcome to My SHOP!" }
-})
-
-fastify.register(userRoute)
 
 const start = async () => {
     try {
